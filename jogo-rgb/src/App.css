@@ -289,7 +289,7 @@ body {
 }
 
 /* -------------------------
-   AUTH SCREENS & HEADER 
+   AUTH SCREENS & HEADER
 --------------------------*/
 
 .auth-container {
@@ -394,11 +394,11 @@ body {
   justify-content: space-between;
   align-items: center;
   z-index: 10;
-  pointer-events: none; /* Let clicks pass through to game if needed */
+  pointer-events: none;
 }
 
 .game-header > * {
-  pointer-events: auto; /* Re-enable clicks for header items */
+  pointer-events: auto;
 }
 
 .user-greeting {
@@ -411,4 +411,127 @@ body {
   padding: 0.5rem 1.2rem;
   font-size: 0.8rem;
   border-radius: 8px;
+}
+
+/* -------------------------
+   HOME PAGE
+--------------------------*/
+
+.home-container {
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.4s ease;
+}
+
+.home-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.75rem;
+  padding: 3rem 2rem;
+  max-width: 420px;
+  width: 100%;
+}
+
+.home-title-wrapper {
+  text-align: center;
+}
+
+.home-title {
+  font-size: 3rem;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  color: var(--text);
+  line-height: 1;
+}
+
+.home-title-accent {
+  background: linear-gradient(90deg, #f87171, #4ade80, #60a5fa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.home-description {
+  font-size: 0.95rem;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.65;
+  max-width: 320px;
+  letter-spacing: 0.01em;
+}
+
+.home-user-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.75rem 1.25rem;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.home-user-name {
+  font-size: 0.9rem;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+
+.home-logout-btn {
+  padding: 0.35rem 1rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: var(--muted);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.home-logout-btn:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: var(--text);
+}
+
+.home-play-btn {
+  width: 100%;
+  padding: 1rem 2.5rem;
+  background: var(--accent);
+  border: none;
+  border-radius: 12px;
+  color: #0a0a0a;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.home-play-btn:hover {
+  opacity: 0.88;
+  transform: translateY(-2px);
+}
+
+.home-play-btn:active {
+  transform: scale(0.97);
+}
+
+@media (max-width: 480px) {
+  .home-title {
+    font-size: 2.25rem;
+  }
+  .home-card {
+    padding: 2rem 1.25rem;
+  }
 }

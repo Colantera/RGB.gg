@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import GameScreen from '../GameScreen.jsx';
-import ResultScreen from '../ResultScreen.jsx';
+import GameScreen from '../components/GameScreen.jsx';
+import ResultScreen from '../components/ResultScreen.jsx';
 import { useAuth } from '../hooks/useAuth.js';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,11 +10,6 @@ const generateColor = () => ({
   b: Math.floor(Math.random() * 256),
 });
 
-const generateGame = () => {
-  const targetColor = generateColor();
-  return { targetColor };
-};
-
 const GamePage = () => {
   const [phase, setPhase] = useState('reveal');
   const [targetColor, setTargetColor] = useState({ r: 0, g: 0, b: 0 });
@@ -23,11 +18,11 @@ const GamePage = () => {
   const [streak, setStreak] = useState(0);
   const [round, setRound] = useState(1);
 
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const startRound = () => {
-    const { targetColor: newTarget } = generateGame();
+    const newTarget = generateColor();
     setTargetColor(newTarget);
     setSelected(null);
     setPhase('reveal');
@@ -60,11 +55,6 @@ const GamePage = () => {
     startRound();
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
-
   useEffect(() => {
     startRound();
   }, []);
@@ -73,9 +63,9 @@ const GamePage = () => {
     <>
       <header className="game-header">
         <span className="user-greeting">Olá, {user?.name}</span>
-        <button className="logout-btn confirm-btn" onClick={handleLogout}>Sair</button>
+        <button className="logout-btn confirm-btn" onClick={() => navigate('/')}>voltar</button>
       </header>
-      
+
       <div className="app">
         {(phase === 'reveal' || phase === 'guess') && (
           <GameScreen

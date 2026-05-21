@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ResultScreen = ({ targetColor, selected, score, streak, round }) => {
+const ResultScreen = ({ targetColor, selected, score, streak, round, onNext }) => {
   const diff = selected
     ? Math.round(
         Math.sqrt(
@@ -59,6 +59,10 @@ const ResultScreen = ({ targetColor, selected, score, streak, round }) => {
           <span className="stat-label">rodada</span>
         </div>
       </div>
+
+      <button className="next-btn" onClick={onNext}>
+        próxima cor →
+      </button>
     </div>
   );
 };

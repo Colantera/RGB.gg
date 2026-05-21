@@ -49,11 +49,11 @@ const App = () => {
       setStreak(0);
       setScore((prev) => prev + Math.round(accuracy * 50));
     }
+  };
 
-    setTimeout(() => {
-      setRound((prev) => prev + 1);
-      startRound();
-    }, 3000);
+    const handleNext = () => {
+    setRound((prev) => prev + 1);
+    startRound();
   };
 
   useEffect(() => {
@@ -76,6 +76,7 @@ const App = () => {
           score={score}
           streak={streak}
           round={round}
+          onNext={handleNext}
         />
       )}
     </div>

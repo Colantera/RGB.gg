@@ -1,16 +1,23 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { RgbColorPicker } from 'react-colorful';
 
-const GameScreen = ({ phase, targetColor, options, onGuess }) => {
-  const [pickedColor, setPickedColor] = useState({ r: 128, g: 128, b: 128 });
+const GameScreen = ({ phase, targetColor, onGuess }) => {
+  const [pickedColor, setPickedColor] = useState({
+    r: 128,
+    g: 128,
+    b: 128,
+  });
 
   if (phase === 'reveal') {
     return (
       <div className="game-screen reveal">
         <div
           className="color-block"
-          style={{ backgroundColor: `rgb(${targetColor.r}, ${targetColor.g}, ${targetColor.b})` }}
+          style={{
+            backgroundColor: `rgb(${targetColor.r}, ${targetColor.g}, ${targetColor.b})`,
+          }}
         />
+
         <p className="hint">memorize essa cor</p>
       </div>
     );
@@ -24,12 +31,20 @@ const GameScreen = ({ phase, targetColor, options, onGuess }) => {
         <div className="picker-wrapper">
           <div
             className="picked-preview"
-            style={{ backgroundColor: `rgb(${pickedColor.r}, ${pickedColor.g}, ${pickedColor.b})` }}
+            style={{
+              backgroundColor: `rgb(${pickedColor.r}, ${pickedColor.g}, ${pickedColor.b})`,
+            }}
           />
-          <RgbColorPicker color={pickedColor} onChange={setPickedColor} />
+
+          <RgbColorPicker
+            color={pickedColor}
+            onChange={setPickedColor}
+          />
+
           <p className="picked-label">
             rgb({pickedColor.r}, {pickedColor.g}, {pickedColor.b})
           </p>
+
           <button
             className="confirm-btn"
             onClick={() => onGuess(pickedColor)}

@@ -1,4 +1,4 @@
-import React from 'react';
+
 
 const ResultScreen = ({ targetColor, selected, score, streak, round, onNext }) => {
   const diff = selected

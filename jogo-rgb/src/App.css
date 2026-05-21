@@ -3,6 +3,7 @@
 :root {
   --bg: #0a0a0a;
   --surface: #111111;
+  --surface2: #1a1a1a;
   --border: rgba(255, 255, 255, 0.08);
   --text: #ffffff;
   --muted: rgba(255, 255, 255, 0.4);
@@ -11,7 +12,6 @@
   --accent: #a78bfa;
 }
 
-/* RESET E BASE */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -44,70 +44,109 @@ body {
   align-items: center;
   justify-content: center;
   gap: 2rem;
+  position: relative;
 }
 
-/* COLOR BLOCK */
+/* COLOR BLOCK (fase reveal) */
 .color-block {
   width: 100vw;
   height: 100vh;
   position: absolute;
   top: 0;
   left: 0;
-  transition: opacity 0.5s ease;
+  animation: fadeIn 0.3s ease;
 }
 
-/* HINT */
 .hint {
   position: relative;
   z-index: 1;
   font-size: 0.85rem;
-  color: var(--muted);
+  color: rgba(255,255,255,0.7);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   animation: fadeIn 0.4s ease;
+  background: rgba(0,0,0,0.4);
+  padding: 0.5rem 1.2rem;
+  border-radius: 999px;
 }
 
-/* QUESTION */
+/* FASE GUESS — picker */
 .question {
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: var(--muted);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
-/* OPTIONS CONTAINER */
-.options {
+.picker-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  width: 100%;
-  max-width: 360px;
+  align-items: center;
+  gap: 1.25rem;
+  animation: fadeIn 0.3s ease;
 }
 
-/* OPTION BUTTON */
-.option-btn {
-  width: 100%;
-  padding: 1rem 1.5rem;
-  background-color: var(--surface);
+.picked-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 16px;
   border: 1px solid var(--border);
-  border-radius: 12px;
+  transition: background-color 0.1s ease;
+  animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Estilo do react-colorful */
+.react-colorful {
+  width: 280px !important;
+  height: 220px !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+
+.react-colorful__saturation {
+  border-radius: 10px 10px 0 0 !important;
+}
+
+.react-colorful__last-control {
+  border-radius: 0 0 10px 10px !important;
+}
+
+.react-colorful__pointer {
+  width: 22px !important;
+  height: 22px !important;
+  border-width: 3px !important;
+}
+
+.picked-label {
   font-family: monospace;
-  font-size: 1rem;
+  font-size: 0.95rem;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
+.confirm-btn {
+  padding: 0.75rem 2.5rem;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
   color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   cursor: pointer;
-  letter-spacing: 0.05em;
   transition: all 0.15s ease;
 }
 
-.option-btn:hover {
-  background-color: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
+.confirm-btn:hover {
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(255,255,255,0.35);
+  transform: translateY(-1px);
 }
 
-.option-btn:active {
-  transform: scale(0.98);
+.confirm-btn:active {
+  transform: scale(0.97);
 }
 
 /* RESULT SCREEN */
@@ -115,45 +154,68 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  gap: 2rem;
   padding: 2rem;
+  animation: fadeIn 0.3s ease;
 }
 
-/* COLOR REVEAL */
-.color-reveal {
-  width: 120px;
-  height: 120px;
+.color-comparison {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.color-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.color-swatch {
+  width: 110px;
+  height: 110px;
   border-radius: 16px;
+  border: 1px solid var(--border);
   animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* VERDICT */
+.swatch-label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.swatch-code {
+  font-family: monospace;
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.5);
+}
+
+.vs-divider {
+  font-size: 0.85rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+}
+
 .verdict {
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 600;
   letter-spacing: -0.02em;
+  color: var(--text);
 }
 
 .verdict.correct {
   color: var(--correct);
 }
 
-.verdict.wrong {
-  color: var(--wrong);
-}
-
-/* COLOR LABEL */
-.color-label {
-  font-family: monospace;
-  font-size: 0.95rem;
-  color: var(--muted);
-}
-
 /* STATS */
 .stats {
   display: flex;
-  gap: 2rem;
-  margin-top: 0.5rem;
+  gap: 2.5rem;
 }
 
 .stat {
@@ -170,7 +232,7 @@ body {
 }
 
 .stat-label {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -178,33 +240,25 @@ body {
 
 /* ANIMAÇÕES */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 @keyframes popIn {
-  from {
-    opacity: 0;
-    transform: scale(0.6);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.7); }
+  to   { opacity: 1; transform: scale(1); }
 }
 
 /* RESPONSIVO */
 @media (max-width: 480px) {
-  .option-btn {
-    font-size: 0.9rem;
-    padding: 0.85rem 1.2rem;
+  .react-colorful {
+    width: 240px !important;
   }
-  
-  .stat-value {
-    font-size: 1.2rem;
+  .color-swatch {
+    width: 85px;
+    height: 85px;
+  }
+  .stats {
+    gap: 1.5rem;
   }
 }

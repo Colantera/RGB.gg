@@ -287,3 +287,128 @@ body {
 .next-btn:active {
   transform: scale(0.97);
 }
+
+/* -------------------------
+   AUTH SCREENS & HEADER 
+--------------------------*/
+
+.auth-container {
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.auth-form {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.auth-form h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.form-group input {
+  background-color: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.auth-btn {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.auth-footer {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
+}
+
+.auth-footer a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  transition: opacity 0.2s ease;
+}
+
+.auth-footer a:hover {
+  opacity: 0.8;
+}
+
+.auth-error {
+  background-color: rgba(248, 113, 113, 0.1);
+  border: 1px solid var(--wrong);
+  color: var(--wrong);
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.game-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+  pointer-events: none; /* Let clicks pass through to game if needed */
+}
+
+.game-header > * {
+  pointer-events: auto; /* Re-enable clicks for header items */
+}
+
+.user-greeting {
+  font-size: 0.9rem;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+.logout-btn {
+  padding: 0.5rem 1.2rem;
+  font-size: 0.8rem;
+  border-radius: 8px;
+}

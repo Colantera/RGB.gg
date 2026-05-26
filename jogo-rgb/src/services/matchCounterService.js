@@ -1,37 +1,28 @@
-const getBaseUrl = () => {
-  return import.meta.env.VITE_COUNTAPI_URL || 'https://api.countapi.xyz';
-};
+const BASE_URL = 'https://api.counterapi.dev/v2/joao-vitor-ribass-team-4256/first-counter-4256';
+const API_KEY = import.meta.env.VITE_COUNTERAPI_KEY;
 
-const getNamespaceKey = () => {
-  const date = new Date().toISOString().split('T')[0];
-  return `rgbgg/matches-${date}`;
-};
+const getHeaders = () => ({
+  'Authorization': `Bearer ${API_KEY}`,
+});
 
 export const incrementMatchCount = async () => {
   try {
-    const response = await fetch(`${getBaseUrl()}/hit/${getNamespaceKey()}`);
-    if (!response.ok) {
-      return null;
-    }
-    const data = await response.json();
-    return data.value;
-  } catch (error) {
-    console.error("Erro ao incrementar contador de partidas:", error);
+    const res = await fetch(`${BASE_URL}/up`, { headers: getHeaders() });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.count;
+  } catch {
     return null;
   }
 };
 
 export const getMatchCount = async () => {
   try {
-    const response = await fetch(`${getBaseUrl()}/get/${getNamespaceKey()}`);
-    if (!response.ok) {
-      if (response.status === 404) return 0;
-      return null;
-    }
-    const data = await response.json();
-    return data.value;
-  } catch (error) {
-    console.error("Erro ao buscar contador de partidas:", error);
+    const res = await fetch(BASE_URL, { headers: getHeaders() });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.count;
+  } catch {
     return null;
   }
 };

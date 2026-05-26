@@ -3,66 +3,68 @@ import GameScreen from '../components/GameScreen.jsx';
 import ResultScreen from '../components/ResultScreen.jsx';
 import { useAuth } from '../hooks/useAuth.js';
 import { useNavigate } from 'react-router-dom';
-
-const generateColor = () => ({
-  r: Math.floor(Math.random() * 256),
-  g: Math.floor(Math.random() * 256),
-  b: Math.floor(Math.random() * 256),
-});
+import { useGame } from '../hooks/useGame.js';
+import { getMatchCount, incrementMatchCount } from '../services/matchCounterService.js';
 
 const GamePage = () => {
-  const [phase, setPhase] = useState('reveal');
-  const [targetColor, setTargetColor] = useState({ r: 0, g: 0, b: 0 });
-  const [selected, setSelected] = useState(null);
-  const [score, setScore] = useState(0);
-  const [streak, setStreak] = useState(0);
-  const [round, setRound] = useState(1);
-
+  const { 
+    phase, 
+    targetColor, 
+    selected, 
+    score, 
+    streak, 
+    round, 
+    handleGuess, 
+    handleNext: gameHandleNext 
+  } = useGame();
+  
   const { user } = useAuth();
   const navigate = useNavigate();
-
-  const startRound = () => {
-    const newTarget = generateColor();
-    setTargetColor(newTarget);
-    setSelected(null);
-    setPhase('reveal');
-    setTimeout(() => setPhase('guess'), 2000);
-  };
-
-  const handleGuess = (color) => {
-    setSelected(color);
-    setPhase('result');
-
-    const diff = Math.sqrt(
-      Math.pow(color.r - targetColor.r, 2) +
-      Math.pow(color.g - targetColor.g, 2) +
-      Math.pow(color.b - targetColor.b, 2)
-    );
-
-    const accuracy = Math.max(0, (1 - diff / 441));
-
-    if (accuracy >= 0.95) {
-      setScore((prev) => prev + Math.round(accuracy * 100));
-      setStreak((prev) => prev + 1);
-    } else {
-      setStreak(0);
-      setScore((prev) => prev + Math.round(accuracy * 50));
-    }
-  };
-
-  const handleNext = () => {
-    setRound((prev) => prev + 1);
-    startRound();
-  };
+  
+  const [matchCount, setMatchCount] = useState(null);
+  const [loadingCount, setLoadingCount] = useState(true);
 
   useEffect(() => {
-    startRound();
+    let isMounted = true;
+    
+    const initCounter = async () => {
+      setLoadingCount(true);
+      await getMatchCount(); 
+      const updated = await incrementMatchCount();
+      
+      if (isMounted) {
+        if (updated !== null) {
+          setMatchCount(updated);
+        }
+        setLoadingCount(false);
+      }
+    };
+    
+    initCounter();
+    
+    return () => {
+      isMounted = false;
+    };
   }, []);
+
+  const handleNextRound = async () => {
+    gameHandleNext();
+    const updated = await incrementMatchCount();
+    if (updated !== null) {
+      setMatchCount(updated);
+    }
+  };
 
   return (
     <>
       <header className="game-header">
         <span className="user-greeting">Olá, {user?.name}</span>
+        
+        {loadingCount && <span className="user-greeting">...</span>}
+        {!loadingCount && matchCount !== null && (
+          <span className="user-greeting">{matchCount} partidas jogadas hoje</span>
+        )}
+        
         <button className="logout-btn confirm-btn" onClick={() => navigate('/')}>voltar</button>
       </header>
 
@@ -81,7 +83,7 @@ const GamePage = () => {
             score={score}
             streak={streak}
             round={round}
-            onNext={handleNext}
+            onNext={handleNextRound}
           />
         )}
       </div>

@@ -22,37 +22,16 @@ const GamePage = () => {
   const navigate = useNavigate();
   
   const [matchCount, setMatchCount] = useState(null);
-  const [loadingCount, setLoadingCount] = useState(true);
 
   useEffect(() => {
-    let isMounted = true;
-    
-    const initCounter = async () => {
-      setLoadingCount(true);
-      await getMatchCount(); 
-      const updated = await incrementMatchCount();
-      
-      if (isMounted) {
-        if (updated !== null) {
-          setMatchCount(updated);
-        }
-        setLoadingCount(false);
-      }
-    };
-    
-    initCounter();
-    
-    return () => {
-      isMounted = false;
-    };
+    const count = getMatchCount(); // só busca, não incrementa
+    setMatchCount(count);
   }, []);
 
-  const handleNextRound = async () => {
+  const handleNextRound = () => {
     gameHandleNext();
-    const updated = await incrementMatchCount();
-    if (updated !== null) {
-      setMatchCount(updated);
-    }
+    const updated = incrementMatchCount(); // incrementa só ao avançar rodada
+    setMatchCount(updated);
   };
 
   return (
@@ -60,8 +39,7 @@ const GamePage = () => {
       <header className="game-header">
         <span className="user-greeting">Olá, {user?.name}</span>
         
-        {loadingCount && <span className="user-greeting">...</span>}
-        {!loadingCount && matchCount !== null && (
+        {matchCount !== null && (
           <span className="user-greeting">{matchCount} partidas jogadas hoje</span>
         )}
         

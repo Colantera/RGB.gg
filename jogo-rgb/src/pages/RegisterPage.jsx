@@ -7,56 +7,53 @@ const RegisterPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [successMsg, setSuccessMsg] = useState(''); // NOVO ESTADO AQUI
   
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  // Função exclusiva para validação de cadastro no Frontend
   const validateForm = () => {
-    // 1. Validação de campos vazios ou apenas espaços em branco
     if (!name.trim() || !email.trim() || !password.trim()) {
       setError('Por favor, preencha todos os campos.');
       return false;
     }
-
-    // 2. Validação do tamanho do nome (evita nomes de apenas uma letra)
     if (name.trim().length < 2) {
       setError('O nome deve ter pelo menos 2 caracteres.');
       return false;
     }
-
-    // 3. Validação de formato de E-mail usando Expressão Regular (Regex)
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError('Por favor, insira um e-mail válido (ex: nome@dominio.com).');
       return false;
     }
-
-    // 4. Validação de tamanho mínimo da senha por segurança
     if (password.length < 4) {
       setError('A senha deve ter pelo menos 4 caracteres.');
       return false;
     }
-
-    return true; // Formulário válido
+    return true; 
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); // Limpa erros anteriores
+    setError(''); 
+    setSuccessMsg(''); // Limpa a mensagem caso já exista
     
-    // Executa a validação do Frontend primeiro
-    if (!validateForm()) {
-      return; // Interrompe se houver erro no front
-    }
+    if (!validateForm()) return;
 
-    // Se passar na validação do front, envia os dados para o serviço
-    const result = register(name, email, password);
+    // Dispara para o Backend (lembre-se que aqui usamos await)
+    const result = await register(name, email, password);
     
     if (result.success) {
-      navigate('/login');
+      // 1. Exibe a mensagem de sucesso na tela
+      setSuccessMsg('Cadastro realizado com sucesso! Redirecionando...');
+      
+      // 2. Aguarda 2 segundos (2000ms) antes de jogar o usuário pra tela de Login
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
+      
     } else {
-      setError(result.error); // Exibe erro caso o e-mail já esteja cadastrado no localStorage
+      setError(result.error); 
     }
   };
 
@@ -65,7 +62,9 @@ const RegisterPage = () => {
       <form className="auth-form" onSubmit={handleSubmit}>
         <h2>Cadastro</h2>
         
+        {/* Renderização Condicional: Mostra Erro OU Sucesso */}
         {error && <div className="auth-error">{error}</div>}
+        {successMsg && <div className="auth-success">{successMsg}</div>}
         
         <div className="form-group">
           <label>Nome</label>
@@ -74,6 +73,7 @@ const RegisterPage = () => {
             value={name} 
             onChange={(e) => setName(e.target.value)} 
             placeholder="Seu nome"
+            disabled={!!successMsg} /* Desabilita os campos se deu sucesso */
           />
         </div>
         
@@ -84,6 +84,7 @@ const RegisterPage = () => {
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
             placeholder="Seu e-mail"
+            disabled={!!successMsg}
           />
         </div>
         
@@ -94,10 +95,17 @@ const RegisterPage = () => {
             value={password} 
             onChange={(e) => setPassword(e.target.value)} 
             placeholder="Crie uma senha"
+            disabled={!!successMsg}
           />
         </div>
         
-        <button type="submit" className="confirm-btn auth-btn">Cadastrar</button>
+        <button 
+          type="submit" 
+          className="confirm-btn auth-btn"
+          disabled={!!successMsg} /* Desabilita o botão para não clicar duas vezes */
+        >
+          {successMsg ? 'Aguarde...' : 'Cadastrar'}
+        </button>
         
         <p className="auth-footer">
           Já tem uma conta? <Link to="/login">Entre</Link>

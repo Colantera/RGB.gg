@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   // register agora é async
-  const register = async (name, email, password) => {
+  const register = (name, email, password) => {
     return authService.register(name, email, password);
   };
 

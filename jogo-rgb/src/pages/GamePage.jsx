@@ -4,7 +4,6 @@ import ResultScreen from '../components/ResultScreen.jsx';
 import { useAuth } from '../hooks/useAuth.js';
 import { useNavigate } from 'react-router-dom';
 import { useGame } from '../hooks/useGame.js';
-import { getMatchCount, createMatch, saveRound } from '../services/matchCounterService.js';
 
 const GamePage = () => {
   const {

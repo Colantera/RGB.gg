@@ -1,60 +1,58 @@
-const API = 'http://localhost:3001';
-
-const saveSession = (token, user) => {
-  localStorage.setItem('rgb_token', token);
-  localStorage.setItem('rgb_user', JSON.stringify(user));
-};
-
 export const authService = {
-  getToken() {
-    return localStorage.getItem('rgb_token');
+  getUsers() {
+    return JSON.parse(localStorage.getItem('rgb_users')) || [];
   },
 
   getCurrentUser() {
-    const raw = localStorage.getItem('rgb_user');
-    return raw ? JSON.parse(raw) : null;
+    return JSON.parse(localStorage.getItem('rgb_current_user')) || null;
   },
 
-  async register(name, email, password) {
-    try {
-      const res = await fetch(`${API}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) return { success: false, error: data.error };
-
-      saveSession(data.token, data.user);
-      return { success: true };
-    } catch {
-      return { success: false, error: 'Servidor indisponível.' };
+  register(name, email, password) {
+    const users = this.getUsers();
+    
+    if (users.find(u => u.email === email)) {
+      return { success: false, error: 'E-mail já cadastrado.' };
     }
+    
+    // Adiciona o campo avatar padrão como null no registro simulado
+    users.push({ name, email, password, avatar: null });
+    localStorage.setItem('rgb_users', JSON.stringify(users));
+    
+    return { success: true };
   },
 
-  async login(email, password) {
-    try {
-      const res = await fetch(`${API}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) return { success: false, error: data.error };
-
-      saveSession(data.token, data.user);
-      return { success: true, user: data.user };
-    } catch {
-      return { success: false, error: 'Servidor indisponível.' };
+  login(email, password) {
+    const users = this.getUsers();
+    const user = users.find(u => u.email === email && u.password === password);
+    
+    if (user) {
+      const currentUser = { name: user.name, email: user.email, avatar: user.avatar || null };
+      localStorage.setItem('rgb_current_user', JSON.stringify(currentUser));
+      return { success: true, user: currentUser };
     }
+    
+    return { success: false, error: 'Credenciais inválidas.' };
+  },
+
+  updateAvatar(email, base64Image) {
+    const users = this.getUsers();
+    const userIndex = users.findIndex(u => u.email === email);
+
+    if (userIndex !== -1) {
+      users[userIndex].avatar = base64Image;
+      localStorage.setItem('rgb_users', JSON.stringify(users));
+
+      const currentUser = this.getCurrentUser();
+      if (currentUser && currentUser.email === email) {
+        currentUser.avatar = base64Image;
+        localStorage.setItem('rgb_current_user', JSON.stringify(currentUser));
+      }
+      return { success: true, avatar: base64Image };
+    }
+    return { success: false, error: 'Usuário não encontrado.' };
   },
 
   logout() {
-    localStorage.removeItem('rgb_token');
-    localStorage.removeItem('rgb_user');
-  },
+    localStorage.removeItem('rgb_current_user');
+  }
 };

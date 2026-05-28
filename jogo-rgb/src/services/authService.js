@@ -1,39 +1,60 @@
+const API = 'http://localhost:3001';
+
+const saveSession = (token, user) => {
+  localStorage.setItem('rgb_token', token);
+  localStorage.setItem('rgb_user', JSON.stringify(user));
+};
+
 export const authService = {
-  getUsers() {
-    return JSON.parse(localStorage.getItem('rgb_users')) || [];
+  getToken() {
+    return localStorage.getItem('rgb_token');
   },
 
   getCurrentUser() {
-    return JSON.parse(localStorage.getItem('rgb_current_user')) || null;
+    const raw = localStorage.getItem('rgb_user');
+    return raw ? JSON.parse(raw) : null;
   },
 
-  register(name, email, password) {
-    const users = this.getUsers();
-    
-    if (users.find(u => u.email === email)) {
-      return { success: false, error: 'E-mail já cadastrado.' };
+  async register(name, email, password) {
+    try {
+      const res = await fetch(`${API}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) return { success: false, error: data.error };
+
+      saveSession(data.token, data.user);
+      return { success: true };
+    } catch {
+      return { success: false, error: 'Servidor indisponível.' };
     }
-    
-    users.push({ name, email, password });
-    localStorage.setItem('rgb_users', JSON.stringify(users));
-    
-    return { success: true };
   },
 
-  login(email, password) {
-    const users = this.getUsers();
-    const user = users.find(u => u.email === email && u.password === password);
-    
-    if (user) {
-      const currentUser = { name: user.name, email: user.email };
-      localStorage.setItem('rgb_current_user', JSON.stringify(currentUser));
-      return { success: true, user: currentUser };
+  async login(email, password) {
+    try {
+      const res = await fetch(`${API}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) return { success: false, error: data.error };
+
+      saveSession(data.token, data.user);
+      return { success: true, user: data.user };
+    } catch {
+      return { success: false, error: 'Servidor indisponível.' };
     }
-    
-    return { success: false, error: 'Credenciais inválidas.' };
   },
 
   logout() {
-    localStorage.removeItem('rgb_current_user');
-  }
+    localStorage.removeItem('rgb_token');
+    localStorage.removeItem('rgb_user');
+  },
 };

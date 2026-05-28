@@ -9,21 +9,19 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const currentUser = authService.getCurrentUser();
-    if (currentUser) {
-      setUser(currentUser);
-    }
+    if (currentUser) setUser(currentUser);
     setLoading(false);
   }, []);
 
-  const login = (email, password) => {
-    const result = authService.login(email, password);
-    if (result.success) {
-      setUser(result.user);
-    }
+  // login agora é async (chama o backend)
+  const login = async (email, password) => {
+    const result = await authService.login(email, password);
+    if (result.success) setUser(result.user);
     return result;
   };
 
-  const register = (name, email, password) => {
+  // register agora é async
+  const register = async (name, email, password) => {
     return authService.register(name, email, password);
   };
 
@@ -32,20 +30,10 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  const value = {
-    user,
-    isAuthenticated: !!user,
-    login,
-    register,
-    logout
-  };
-
-  if (loading) {
-    return null;
-  }
+  if (loading) return null;
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

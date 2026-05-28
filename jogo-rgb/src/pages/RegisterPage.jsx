@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
@@ -11,16 +11,52 @@ const RegisterPage = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
 
+  // Função exclusiva para validação de cadastro no Frontend
+  const validateForm = () => {
+    // 1. Validação de campos vazios ou apenas espaços em branco
+    if (!name.trim() || !email.trim() || !password.trim()) {
+      setError('Por favor, preencha todos os campos.');
+      return false;
+    }
+
+    // 2. Validação do tamanho do nome (evita nomes de apenas uma letra)
+    if (name.trim().length < 2) {
+      setError('O nome deve ter pelo menos 2 caracteres.');
+      return false;
+    }
+
+    // 3. Validação de formato de E-mail usando Expressão Regular (Regex)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Por favor, insira um e-mail válido (ex: nome@dominio.com).');
+      return false;
+    }
+
+    // 4. Validação de tamanho mínimo da senha por segurança
+    if (password.length < 4) {
+      setError('A senha deve ter pelo menos 4 caracteres.');
+      return false;
+    }
+
+    return true; // Formulário válido
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    setError('');
+    setError(''); // Limpa erros anteriores
     
+    // Executa a validação do Frontend primeiro
+    if (!validateForm()) {
+      return; // Interrompe se houver erro no front
+    }
+
+    // Se passar na validação do front, envia os dados para o serviço
     const result = register(name, email, password);
     
     if (result.success) {
       navigate('/login');
     } else {
-      setError(result.error);
+      setError(result.error); // Exibe erro caso o e-mail já esteja cadastrado no localStorage
     }
   };
 
@@ -37,7 +73,6 @@ const RegisterPage = () => {
             type="text" 
             value={name} 
             onChange={(e) => setName(e.target.value)} 
-            required 
             placeholder="Seu nome"
           />
         </div>
@@ -45,10 +80,9 @@ const RegisterPage = () => {
         <div className="form-group">
           <label>E-mail</label>
           <input 
-            type="email" 
+            type="text" 
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
-            required 
             placeholder="Seu e-mail"
           />
         </div>
@@ -59,7 +93,6 @@ const RegisterPage = () => {
             type="password" 
             value={password} 
             onChange={(e) => setPassword(e.target.value)} 
-            required 
             placeholder="Crie uma senha"
           />
         </div>

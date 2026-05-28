@@ -1,62 +1,27 @@
-const API = 'http://localhost:3001';
+const BASE_URL = 'https://api.counterapi.dev/v2/joao-vitor-ribass-team-4256/first-counter-4256';
 
-const getToken = () => localStorage.getItem('rgb_token');
+export const incrementMatchCount = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/up`);
+    if (!res.ok) return null;
+    const json = await res.json();
+    // Acessa diretamente o número de contagens positivas
+    return json.data?.up_count ?? null;
+  } catch (err) {
+    console.error("Erro no increment:", err);
+    return null;
+  }
+};
 
-// Retorna o total global de partidas jogadas hoje
 export const getMatchCount = async () => {
   try {
-    const res = await fetch(`${API}/matches/today-count`, {
-      headers: { Authorization: `Bearer ${getToken()}` },
-    });
-
+    const res = await fetch(BASE_URL);
     if (!res.ok) return null;
-
-    const data = await res.json();
-    return data.count;
-  } catch {
-    return null;
-  }
-};
-
-// Cria uma nova partida no banco e retorna o matchId
-export const createMatch = async () => {
-  try {
-    const res = await fetch(`${API}/matches`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${getToken()}` },
-    });
-
-    if (!res.ok) return null;
-
-    const data = await res.json();
-    return data.matchId;
-  } catch {
-    return null;
-  }
-};
-
-// Salva uma rodada dentro de uma partida
-export const saveRound = async (matchId, { targetColor, guessColor, accuracy }) => {
-  if (!matchId) return;
-
-  try {
-    await fetch(`${API}/matches/${matchId}/rounds`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${getToken()}`,
-      },
-      body: JSON.stringify({
-        target_r: targetColor.r,
-        target_g: targetColor.g,
-        target_b: targetColor.b,
-        guess_r:  guessColor.r,
-        guess_g:  guessColor.g,
-        guess_b:  guessColor.b,
-        accuracy,
-      }),
-    });
+    const json = await res.json();
+    // Acessa diretamente o número de contagens positivas
+    return json.data?.up_count ?? null;
   } catch (err) {
-    console.error('saveRound error:', err);
+    console.error("Erro no get:", err);
+    return null;
   }
 };

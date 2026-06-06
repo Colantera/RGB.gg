@@ -58,7 +58,7 @@ const HomePage = () => {
           marginBottom: '1.5rem'
         }}>
           <p style={{ fontSize: '0.75rem', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>
-            Partidas jogadas hoje
+            Partidas jogadas
           </p>
           
           {loadingCount && (

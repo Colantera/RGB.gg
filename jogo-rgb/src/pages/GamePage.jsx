@@ -40,7 +40,7 @@ const GamePage = () => {
         <span className="user-greeting">Olá, {user?.name}</span>
         
         {matchCount !== null && (
-          <span className="user-greeting">{matchCount} partidas jogadas hoje</span>
+          <span className="user-greeting">{matchCount} partidas jogadas</span>
         )}
         
         <button className="logout-btn confirm-btn" onClick={() => navigate('/')}>voltar</button>

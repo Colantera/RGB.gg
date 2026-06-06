@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { getMatchCount } from '../services/matchCounterService';
+import ProfileAvatar from '../components/ProfileAvatar'; // <-- 1. Importação do teu novo componente
 
 const HomePage = () => {
   const { user, logout } = useAuth();
@@ -45,7 +46,13 @@ const HomePage = () => {
           Adivinhe a cor a partir do código RGB.
         </p>
         
-        <p style={{ color: 'var(--text)', marginBottom: '1.5rem', fontWeight: 600 }}>
+        {/* 2. O COMPONENTE AVATAR INSERIDO AQUI */}
+        <div style={{ margin: '1.5rem 0' }}>
+          <ProfileAvatar />
+        </div>
+
+        {/* Mudei ligeiramente o tamanho da fonte (fontSize) da saudação para dar mais destaque ao nome */}
+        <p style={{ color: 'var(--text)', marginBottom: '1.5rem', fontWeight: 600, fontSize: '1.2rem' }}>
           Olá, {user?.name}!
         </p>
 
@@ -78,7 +85,6 @@ const HomePage = () => {
           )}
         </div>
 
-        {/* Lembre-se de ajustar a rota '/game' abaixo se o seu jogo estiver configurado para responder apenas em '/' no App.jsx */}
         <button 
           className="confirm-btn auth-btn" 
           onClick={() => navigate('/game')} 

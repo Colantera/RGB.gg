@@ -13,7 +13,7 @@ app.use(cors({
     origin: 'http://localhost:5173', // Permite os pedidos do Vite
     credentials: true // Essencial: permite o envio e recebimento de cookies
 }));
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '20mb' }));
 app.use(cookieParser()); // Ativa o suporte a cookies
 
 // ROTA: CADASTRAR USUÁRIO

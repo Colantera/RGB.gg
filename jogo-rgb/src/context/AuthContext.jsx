@@ -7,8 +7,9 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Mantém a sessão ativa quando a página é recarregada
+  // Assim que a página carrega, verifica o Cookie no Backend
   useEffect(() => {
+<<<<<<< HEAD
     const currentUser = authService.getCurrentUser();
     if (currentUser) setUser(currentUser);
     setLoading(false);
@@ -27,36 +28,51 @@ export const AuthProvider = ({ children }) => {
     return authService.register(name, email, password);
 =======
   // FUNÇÃO DE LOGIN CORRIGIDA COM ASYNC/AWAIT
+=======
+    const carregarSessao = async () => {
+      const result = await authService.checkSession();
+      if (result.success && result.user) {
+        setUser(result.user);
+      }
+      setLoading(false);
+    };
+
+    carregarSessao();
+  }, []);
+
+>>>>>>> 997016df570b992a207d60cd21aee425b9312172
   const login = async (email, password) => {
     const result = await authService.login(email, password);
     if (result.success) {
-      // Agora o estado é atualizado corretamente antes do redirecionamento
       setUser(result.user);
     }
     return result;
   };
 
-  // FUNÇÃO DE REGISTRO CORRIGIDA
   const register = async (name, email, password) => {
     return await authService.register(name, email, password);
   };
 
-  // FUNÇÃO DE AVATAR CORRIGIDA
   const changeAvatar = async (base64Image) => {
     if (user?.email) {
       const result = await authService.updateAvatar(user.email, base64Image);
       if (result.success) {
+        // Atualiza a imagem na interface
         setUser(prev => ({ ...prev, avatar: base64Image }));
       }
       return result;
     }
+<<<<<<< HEAD
     return { success: false, error: 'Não há usuário logado.' };
 >>>>>>> bedf74bc414637a96c98aab3069e6e2b4659e346
+=======
+    return { success: false, error: 'Não há utilizador logado.' };
+>>>>>>> 997016df570b992a207d60cd21aee425b9312172
   };
 
-  const logout = () => {
-    authService.logout();
-    setUser(null);
+  const logout = async () => {
+    await authService.logout(); // Apaga do MySQL e do Cookie
+    setUser(null);              // Limpa o React
   };
 
 <<<<<<< HEAD
@@ -71,8 +87,13 @@ export const AuthProvider = ({ children }) => {
     logout
   };
 
+  // Previne "flashes" na interface enquanto o backend confirma o cookie
   if (loading) {
-    return null;
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white', backgroundColor: '#121212' }}>
+        A carregar sessão...
+      </div>
+    );
   }
 >>>>>>> bedf74bc414637a96c98aab3069e6e2b4659e346
 

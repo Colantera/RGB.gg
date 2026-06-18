@@ -1,9 +1,17 @@
 const API_URL = 'http://localhost:5000/auth';
 
 export const authService = {
-  // A SESSÃO continua no localStorage para o site saber quem está logado ao dar F5
-  getCurrentUser() {
-    return JSON.parse(localStorage.getItem('rgb_current_user')) || null;
+  // Pergunta ao backend quem está logado (usando o cookie)
+  async checkSession() {
+    try {
+      const response = await fetch(`${API_URL}/me`, {
+        method: 'GET',
+        credentials: 'include' // Essencial: envia o cookie
+      });
+      return await response.json();
+    } catch (error) {
+      return { success: false, error: 'Erro de conexão com o servidor.' };
+    }
   },
 
   async register(name, email, password) {
@@ -42,15 +50,10 @@ export const authService = {
       const response = await fetch(`${API_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // Essencial: diz ao navegador para guardar o cookie que o backend mandar
         body: JSON.stringify({ email, password })
       });
-      const data = await response.json();
-      
-      if (data.success) {
-        // Se a API validar o login, nós guardamos o ticket de sessão localmente
-        localStorage.setItem('rgb_current_user', JSON.stringify(data.user));
-      }
-      return data;
+      return await response.json();
     } catch (error) {
       return { success: false, error: 'Erro de conexão com o servidor.' };
     }
@@ -61,25 +64,17 @@ export const authService = {
       const response = await fetch(`${API_URL}/avatar`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, avatar: base64Image })
+        credentials: 'include', // Essencial: envia o cookie para validar a permissão
+        body: JSON.stringify({ avatar: base64Image })
       });
-      const data = await response.json();
-
-      if (data.success) {
-        // Atualiza a foto também na sessão atual do navegador
-        const currentUser = this.getCurrentUser();
-        if (currentUser) {
-          currentUser.avatar = base64Image;
-          localStorage.setItem('rgb_current_user', JSON.stringify(currentUser));
-        }
-      }
-      return data;
+      return await response.json();
     } catch (error) {
       return { success: false, error: 'Erro ao conectar com o servidor.' };
 >>>>>>> bedf74bc414637a96c98aab3069e6e2b4659e346
     }
   },
 
+<<<<<<< HEAD
   updateAvatar(email, base64Image) {
     const users = this.getUsers();
     const userIndex = users.findIndex(u => u.email === email);
@@ -100,5 +95,16 @@ export const authService = {
 
   logout() {
     localStorage.removeItem('rgb_current_user');
+=======
+  async logout() {
+    try {
+      await fetch(`${API_URL}/logout`, { 
+        method: 'POST', 
+        credentials: 'include' 
+      });
+    } catch (error) {
+      console.error('Erro ao terminar sessão', error);
+    }
+>>>>>>> 997016df570b992a207d60cd21aee425b9312172
   }
 };

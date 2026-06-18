@@ -70,7 +70,11 @@ const GamePage = () => {
         <span className="user-greeting">Olá, {user?.name}</span>
 
         {matchCount !== null && (
+<<<<<<< HEAD
           <span className="user-greeting">{matchCount} partidas hoje</span>
+=======
+          <span className="user-greeting">{matchCount} partidas jogadas</span>
+>>>>>>> 997016df570b992a207d60cd21aee425b9312172
         )}
 
         <button className="logout-btn confirm-btn" onClick={() => navigate('/')}>

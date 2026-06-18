@@ -6,50 +6,48 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [successMsg, setSuccessMsg] = useState(''); // NOVO ESTADO
   
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  // Função exclusiva para validação no Frontend
   const validateForm = () => {
-    // 1. Validação de campos vazios
     if (!email.trim() || !password.trim()) {
       setError('Por favor, preencha todos os campos.');
       return false;
     }
-
-    // 2. Validação de formato de E-mail usando Expressão Regular (Regex)
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError('Por favor, insira um e-mail válido (ex: nome@dominio.com).');
       return false;
     }
-
-    // 3. Validação de tamanho mínimo da senha (boas práticas de segurança no front)
     if (password.length < 4) {
       setError('A senha deve ter pelo menos 4 caracteres.');
       return false;
     }
-
-    return true; // Formulário válido
+    return true; 
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); // Limpa erros anteriores
+    setError('');
+    setSuccessMsg(''); // Limpa a mensagem
     
-    // Executa a validação do Frontend primeiro
-    if (!validateForm()) {
-      return; // Interrompe o envio se houver erro no front
-    }
+    if (!validateForm()) return;
 
-    // Se passar na validação do front, tenta fazer o login lógico
-    const result = login(email, password);
+    const result = await login(email, password);
     
     if (result.success) {
-      navigate('/');
+      // 1. Exibe a mensagem de sucesso
+      setSuccessMsg('Login aprovado! Entrando no RGB.gg...');
+      
+      // 2. Aguarda 1.5 segundo (1500ms) para mandar pro jogo
+      setTimeout(() => {
+        navigate('/');
+      }, 1500);
+      
     } else {
-      setError(result.error); // Exibe o erro de credenciais inválidas do serviço
+      setError(result.error);
     }
   };
 
@@ -58,7 +56,9 @@ const LoginPage = () => {
       <form className="auth-form" onSubmit={handleSubmit}>
         <h2>Entrar</h2>
         
+        {/* Renderização Condicional: Mostra Erro OU Sucesso */}
         {error && <div className="auth-error">{error}</div>}
+        {successMsg && <div className="auth-success">{successMsg}</div>}
         
         <div className="form-group">
           <label>E-mail</label>
@@ -67,6 +67,7 @@ const LoginPage = () => {
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
             placeholder="Digite seu e-mail"
+            disabled={!!successMsg} /* Bloqueia se estiver redirecionando */
           />
         </div>
         
@@ -77,10 +78,17 @@ const LoginPage = () => {
             value={password} 
             onChange={(e) => setPassword(e.target.value)} 
             placeholder="Digite sua senha"
+            disabled={!!successMsg}
           />
         </div>
         
-        <button type="submit" className="confirm-btn auth-btn">Login</button>
+        <button 
+          type="submit" 
+          className="confirm-btn auth-btn"
+          disabled={!!successMsg} /* Botão bloqueado enquanto espera */
+        >
+          {successMsg ? 'Carregando...' : 'Login'}
+        </button>
         
         <p className="auth-footer">
           Não tem uma conta? <Link to="/register">Cadastre-se</Link>

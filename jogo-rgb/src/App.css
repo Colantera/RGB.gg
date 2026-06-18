@@ -535,3 +535,22 @@ body {
     padding: 2rem 1.25rem;
   }
 }
+
+/* MENSAGEM DE SUCESSO ANIMADA */
+.auth-success {
+  background-color: rgba(46, 204, 113, 0.15); /* Fundo verde transparente */
+  color: #2ecc71; /* Texto verde vibrante */
+  border: 1px solid #2ecc71;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+  font-weight: bold;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

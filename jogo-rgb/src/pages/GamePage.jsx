@@ -10,8 +10,6 @@ const GamePage = () => {
   } = useGame();
 
   const [matchCount, setMatchCount] = useState(null);
-
-  const [matchCount, setMatchCount] = useState(null);
   const matchIdRef = useRef(null);
 
   // Busca contador e cria a primeira partida ao montar

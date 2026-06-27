@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getMatchCount } from '../services/matchCounterService';
-import Ajuda from '../components/Ajuda';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -67,6 +66,7 @@ const HomePage = () => {
             </p>
           )}
         </div>
+
 
         <button
           className="confirm-btn auth-btn"

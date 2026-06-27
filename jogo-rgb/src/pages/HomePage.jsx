@@ -68,8 +68,6 @@ const HomePage = () => {
           )}
         </div>
 
-        <Ajuda />
-
         <button
           className="confirm-btn auth-btn"
           onClick={() => navigate('/game')}

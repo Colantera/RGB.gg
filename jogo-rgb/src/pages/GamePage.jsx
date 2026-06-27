@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import GameScreen from '../components/GameScreen.jsx';
 import ResultScreen from '../components/ResultScreen.jsx';
 import { useGame } from '../hooks/useGame.js';
-import { getMatchCount, incrementMatchCount } from '../services/matchCounterService.js';
 
 const GamePage = () => {
   const { 
@@ -12,12 +11,34 @@ const GamePage = () => {
 
   const [matchCount, setMatchCount] = useState(null);
 
+  const [matchCount, setMatchCount] = useState(null);
+  const matchIdRef = useRef(null);
+
+  // Busca contador e cria a primeira partida ao montar
   useEffect(() => {
     const count = getMatchCount();
     setMatchCount(count);
   }, []);
 
-  const handleNextRound = () => {
+  // Salva a rodada assim que o resultado fica disponível
+  useEffect(() => {
+    if (phase === 'result' && selected) {
+      const diff = Math.sqrt(
+        Math.pow(selected.r - targetColor.r, 2) +
+        Math.pow(selected.g - targetColor.g, 2) +
+        Math.pow(selected.b - targetColor.b, 2)
+      );
+      const accuracy = Math.round(Math.max(0, (1 - diff / 441)) * 100);
+
+      saveRound(matchIdRef.current, {
+        targetColor,
+        guessColor: selected,
+        accuracy,
+      });
+    }
+  }, [phase]);  // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleNextRound = async () => {
     gameHandleNext();
     const updated = incrementMatchCount();
     setMatchCount(updated);
@@ -27,7 +48,7 @@ const GamePage = () => {
     <>
       <header className="game-header">
         {matchCount !== null && (
-          <span className="user-greeting">{matchCount} partidas jogadas</span>
+          <span className="user-greeting">{matchCount} partidas hoje</span>
         )}
       </header>
 

@@ -2,7 +2,7 @@
 
 Projeto de faculdade. É um jogo de memória de cores: uma cor RGB aparece por 2 segundos, some, e você tenta identificar qual era ela entre as opções mostradas.
 
-🔗 [RGB.gg](http://RGB.gg)
+🔗 [RGB.gg](https://colantera.github.io/RGB.gg/)
 
 ## Como funciona
 
